@@ -24,7 +24,7 @@ SPI max72_spi(PTD2, NC, PTD1);
 DigitalOut load(PTD3);
 DigitalOut led(LED1);
 
-const unsigned int SAMPLES = 400, TIMEOUT = 25;
+const unsigned int SAMPLES = 200, TIMEOUT = 50;
 unsigned int pointer, noleds, current, min, max, avg, beats = 0, bac = 0, beatsa[4], store[400], screen[8];
 bool beatsamples = 0;
 char lines[9] = {0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF8, 0xFC, 0xFE, 0xFF};
@@ -119,10 +119,10 @@ int main()
         //read bpm 
         if(i == SAMPLES){
             i = 0;
-            bool pulse = 0;
+            bool pulse = 1;
             for(int a = 0; a < SAMPLES; a++){
                 if(!pulse){ 
-                    if (8 * (store[a] - min) / (max - min) >= 3){
+                    if (8 * (store[a] - min) / (max - min) >= 5){
                         pulse = 1;
                         beats++;
                     }
@@ -149,7 +149,7 @@ int main()
         avg = avg / SAMPLES;
         
         //Print a line
-        if(min/10 == max/10){
+        if(min > 0.9 * max){
             pattern_to_display(pattern);
             i = 0;
             }
